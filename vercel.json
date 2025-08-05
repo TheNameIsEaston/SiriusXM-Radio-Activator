@@ -3,5 +3,6 @@
     "api/activate.js": {
       "maxDuration": 30
     }
-  }
+  },
+  "outputDirectory": "."
 }
