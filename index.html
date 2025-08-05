@@ -97,17 +97,17 @@
         .info {
             color: #17a2b8;
         }
-        .warning {
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
+        .info-box {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
             border-radius: 5px;
             padding: 15px;
             margin-bottom: 20px;
-            color: #856404;
+            color: #0c5460;
         }
-        .warning h3 {
+        .info-box h3 {
             margin-top: 0;
-            color: #856404;
+            color: #0c5460;
         }
         .github-link {
             text-align: center;
@@ -132,10 +132,10 @@
             <p>Activate your SiriusXM radio with ease</p>
         </div>
 
-        <div class="warning">
-            <h3>⚠️ Demo Version Notice</h3>
-            <p>This is a static demo version hosted on GitHub Pages. The actual activation functionality requires a backend server and cannot work in this environment. This page demonstrates the user interface only.</p>
-            <p>To use the full functionality, please run the Python Flask application locally.</p>
+        <div class="info-box">
+            <h3>🚀 Fully Functional Static Tool</h3>
+            <p>This tool is now fully functional and hosted on Vercel with serverless backend functions. Enter your Radio ID below to activate your SiriusXM radio.</p>
+            <p><strong>Note:</strong> This tool is for educational and authorized dealer use only.</p>
         </div>
 
         <form id="activationForm">
@@ -173,22 +173,8 @@
         const progressContainer = document.getElementById('progressContainer');
         const progressLog = document.getElementById('progressLog');
 
-        // Demo activation steps
-        const demoSteps = [
-            { message: "Starting activation for Radio ID: DEMO123456", type: "info" },
-            { message: "✓ App config completed", type: "success" },
-            { message: "✓ Login completed", type: "success" },
-            { message: "✓ Version control completed", type: "success" },
-            { message: "✓ Properties retrieved", type: "success" },
-            { message: "✓ Device update initiated", type: "success" },
-            { message: "✓ CRM data retrieved", type: "success" },
-            { message: "✓ Database updated", type: "success" },
-            { message: "✓ Blocklist checked", type: "success" },
-            { message: "✓ Oracle validation completed", type: "success" },
-            { message: "✓ Account created successfully", type: "success" },
-            { message: "✓ Final update completed successfully", type: "success" },
-            { message: "🎉 Activation completed successfully!", type: "success" }
-        ];
+        // API endpoint for activation
+        const API_ENDPOINT = '/api/activate';
 
         function addProgressItem(message, type = 'info') {
             const item = document.createElement('div');
@@ -198,36 +184,48 @@
             progressLog.scrollTop = progressLog.scrollHeight;
         }
 
-        function simulateActivation(radioId) {
+        async function activateRadio(radioId) {
             progressContainer.style.display = 'block';
             progressLog.innerHTML = '';
             activateBtn.disabled = true;
             activateBtn.textContent = '⏳ Activating...';
 
-            // Replace DEMO123456 with actual radio ID in first step
-            const steps = [...demoSteps];
-            steps[0].message = steps[0].message.replace('DEMO123456', radioId);
+            addProgressItem(`Starting activation for Radio ID: ${radioId}`, 'info');
 
-            let currentStep = 0;
-            
-            function processNextStep() {
-                if (currentStep < steps.length) {
-                    const step = steps[currentStep];
-                    addProgressItem(step.message, step.type);
-                    currentStep++;
-                    
-                    // Random delay between 500ms and 1500ms for realism
-                    const delay = Math.random() * 1000 + 500;
-                    setTimeout(processNextStep, delay);
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ radioId: radioId })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Display all progress steps
+                    data.progress.forEach(step => {
+                        addProgressItem(step, 'success');
+                    });
                 } else {
-                    // Activation complete
-                    activateBtn.disabled = false;
-                    activateBtn.textContent = '🚀 Activate Radio';
+                    // Handle error
+                    addProgressItem(`❌ Activation failed: ${data.error}`, 'error');
+                    
+                    // Show any progress that was made before failure
+                    if (data.progress && data.progress.length > 0) {
+                        data.progress.forEach(step => {
+                            addProgressItem(step, 'success');
+                        });
+                    }
                 }
+            } catch (error) {
+                addProgressItem(`❌ Network error: ${error.message}`, 'error');
+                console.error('Activation error:', error);
+            } finally {
+                activateBtn.disabled = false;
+                activateBtn.textContent = '🚀 Activate Radio';
             }
-
-            // Start the simulation
-            setTimeout(processNextStep, 500);
         }
 
         form.addEventListener('submit', function(e) {
@@ -245,7 +243,7 @@
                 return;
             }
 
-            simulateActivation(radioId);
+            activateRadio(radioId);
         });
 
         // Format radio ID input as user types
@@ -257,10 +255,10 @@
             e.target.value = value;
         });
 
-        // Add some demo text on page load
+        // Add some info text on page load
         window.addEventListener('load', function() {
-            console.log('SiriusXM Radio Activator Demo - GitHub Pages Version');
-            console.log('This is a demonstration of the user interface only.');
+            console.log('SiriusXM Radio Activator - Fully Functional Static Tool');
+            console.log('Powered by Vercel Serverless Functions');
         });
     </script>
 </body>

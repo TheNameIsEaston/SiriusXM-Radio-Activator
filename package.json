@@ -1,0 +1,26 @@
+{
+  "name": "siriusxm-radio-activator",
+  "version": "1.0.0",
+  "description": "A web-based tool to activate SiriusXM radios through the dealer API interface",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required for static site'",
+    "start": "vercel dev"
+  },
+  "keywords": [
+    "siriusxm",
+    "radio",
+    "activator",
+    "dealer",
+    "api"
+  ],
+  "author": "TheNameIsEaston",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  }
+}

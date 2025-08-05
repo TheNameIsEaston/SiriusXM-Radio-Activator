@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "name": "siriusxm-radio-activator",
+  "builds": [
+    {
+      "src": "api/activate.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "functions": {
+    "api/activate.js": {
+      "maxDuration": 30
+    }
+  }
+}
