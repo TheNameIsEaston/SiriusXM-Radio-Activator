@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SiriusXM Radio Activator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+        .progress-log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .progress-item {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+        .success {
+            color: #28a745;
+        }
+        .error {
+            color: #dc3545;
+        }
+        .info {
+            color: #17a2b8;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+        .warning h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .github-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .github-link a {
+            color: #0366d6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .github-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 SiriusXM Radio Activator</h1>
+            <p>Activate your SiriusXM radio with ease</p>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ Demo Version Notice</h3>
+            <p>This is a static demo version hosted on GitHub Pages. The actual activation functionality requires a backend server and cannot work in this environment. This page demonstrates the user interface only.</p>
+            <p>To use the full functionality, please run the Python Flask application locally.</p>
+        </div>
+
+        <form id="activationForm">
+            <div class="form-group">
+                <label for="radioId">Radio ID:</label>
+                <input type="text" id="radioId" name="radioId" placeholder="Enter your 12-character Radio ID" maxlength="12" required>
+                <small style="color: #666; font-size: 12px;">
+                    Find your Radio ID on your radio display or in your vehicle's settings
+                </small>
+            </div>
+            
+            <button type="submit" class="btn" id="activateBtn">
+                🚀 Activate Radio
+            </button>
+        </form>
+
+        <div class="progress-container" id="progressContainer">
+            <h3>Activation Progress:</h3>
+            <div class="progress-log" id="progressLog"></div>
+        </div>
+
+        <div class="github-link">
+            <p>
+                <a href="https://github.com/TheNameIsEaston/SiriusXM-Radio-Activator" target="_blank">
+                    View Source Code on GitHub
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('activationForm');
+        const radioIdInput = document.getElementById('radioId');
+        const activateBtn = document.getElementById('activateBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressLog = document.getElementById('progressLog');
+
+        // Demo activation steps
+        const demoSteps = [
+            { message: "Starting activation for Radio ID: DEMO123456", type: "info" },
+            { message: "✓ App config completed", type: "success" },
+            { message: "✓ Login completed", type: "success" },
+            { message: "✓ Version control completed", type: "success" },
+            { message: "✓ Properties retrieved", type: "success" },
+            { message: "✓ Device update initiated", type: "success" },
+            { message: "✓ CRM data retrieved", type: "success" },
+            { message: "✓ Database updated", type: "success" },
+            { message: "✓ Blocklist checked", type: "success" },
+            { message: "✓ Oracle validation completed", type: "success" },
+            { message: "✓ Account created successfully", type: "success" },
+            { message: "✓ Final update completed successfully", type: "success" },
+            { message: "🎉 Activation completed successfully!", type: "success" }
+        ];
+
+        function addProgressItem(message, type = 'info') {
+            const item = document.createElement('div');
+            item.className = `progress-item ${type}`;
+            item.textContent = message;
+            progressLog.appendChild(item);
+            progressLog.scrollTop = progressLog.scrollHeight;
+        }
+
+        function simulateActivation(radioId) {
+            progressContainer.style.display = 'block';
+            progressLog.innerHTML = '';
+            activateBtn.disabled = true;
+            activateBtn.textContent = '⏳ Activating...';
+
+            // Replace DEMO123456 with actual radio ID in first step
+            const steps = [...demoSteps];
+            steps[0].message = steps[0].message.replace('DEMO123456', radioId);
+
+            let currentStep = 0;
+            
+            function processNextStep() {
+                if (currentStep < steps.length) {
+                    const step = steps[currentStep];
+                    addProgressItem(step.message, step.type);
+                    currentStep++;
+                    
+                    // Random delay between 500ms and 1500ms for realism
+                    const delay = Math.random() * 1000 + 500;
+                    setTimeout(processNextStep, delay);
+                } else {
+                    // Activation complete
+                    activateBtn.disabled = false;
+                    activateBtn.textContent = '🚀 Activate Radio';
+                }
+            }
+
+            // Start the simulation
+            setTimeout(processNextStep, 500);
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const radioId = radioIdInput.value.trim().toUpperCase();
+            
+            if (!radioId) {
+                alert('Please enter a Radio ID');
+                return;
+            }
+            
+            if (radioId.length !== 12) {
+                alert('Radio ID must be exactly 12 characters long');
+                return;
+            }
+
+            simulateActivation(radioId);
+        });
+
+        // Format radio ID input as user types
+        radioIdInput.addEventListener('input', function(e) {
+            let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (value.length > 12) {
+                value = value.substring(0, 12);
+            }
+            e.target.value = value;
+        });
+
+        // Add some demo text on page load
+        window.addEventListener('load', function() {
+            console.log('SiriusXM Radio Activator Demo - GitHub Pages Version');
+            console.log('This is a demonstration of the user interface only.');
+        });
+    </script>
+</body>
+</html>
